@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Học từ vựng tiếng Nhật</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 50px;
+        }
+
+        .flashcard {
+            width: 300px;
+            min-height: 150px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 2px 2px 5px #888888;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2em;
+        }
+
+        .flashcard.flipped {
+            background-color: #e0f7fa;
+        }
+
+        .front, .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backface-visibility: hidden;
+            transition: transform 0.5s;
+        }
+
+        .back {
+            transform: rotateY(180deg);
+        }
+
+        .flipped .front {
+            transform: rotateY(180deg);
+        }
+
+        .flipped .back {
+            transform: rotateY(0deg);
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        #controls {
+            margin-bottom: 20px;
+        }
+
+        #progress {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Học từ vựng tiếng Nhật</h1>
+
+    <div id="progress"></div>
+
+    <div id="flashcard-container">
+        </div>
+
+    <div id="controls">
+        <button id="show-answer">Xem đáp án</button>
+        <button id="correct">Đúng</button>
+        <button id="incorrect">Sai</button>
+    </div>
+
+    <script>
+        const vocabulary = [
+            { japanese: "なじむ", vietnamese: "quen, hòa nhập, thích nghi", interval: 1, nextReview: Date.now() },
+            { japanese: "張り合う", vietnamese: "cạnh tranh, ganh đua", interval: 1, nextReview: Date.now() },
+            { japanese: "にぎわう", vietnamese: "náo nhiệt, đông đúc", interval: 1, nextReview: Date.now() },
+            { japanese: "報じる", vietnamese: "báo cáo, thông báo, đền đáp", interval: 1, nextReview: Date.now() },
+            { japanese: "及ぼす", vietnamese: "gây ra, ảnh hưởng", interval: 1, nextReview: Date.now() },
+            { japanese: "はかどる", vietnamese: "tiến triển tốt, trôi chảy", interval: 1, nextReview: Date.now() },
+            { japanese: "見合わせる", vietnamese: "hoãn lại, đình chỉ, nhìn nhau", interval: 1, nextReview: Date.now() },
+            { japanese: "見落とす", vietnamese: "bỏ sót, bỏ qua", interval: 1, nextReview: Date.now() },
+            { japanese: "弾む", vietnamese: "nảy, bật lên, phấn khích", interval: 1, nextReview: Date.now() },
+            { japanese: "もくろむ", vietnamese: "lên kế hoạch, dự định", interval: 1, nextReview: Date.now() },
+            { japanese: "かなう", vietnamese: "thành hiện thực, đáp ứng", interval: 1, nextReview: Date.now() },
+            { japanese: "ほどける", vietnamese: "tuột ra, cởi ra, giải tỏa", interval: 1, nextReview: Date.now() },
+            { japanese: "見失う", vietnamese: "lạc mất, đánh mất", interval: 1, nextReview: Date.now() },
+            { japanese: "催す", vietnamese: "tổ chức, có triệu chứng", interval: 1, nextReview: Date.now() },
+            { japanese: "怠る", vietnamese: "lười biếng, bỏ bê", interval: 1, nextReview: Date.now() },
+            { japanese: "言い張る", vietnamese: "khăng khăng, khẳng định", interval: 1, nextReview: Date.now() },
+            { japanese: "和らぐ", vietnamese: "dịu đi, bớt căng thẳng", interval: 1, nextReview: Date.now() },
+            { japanese: "けなす", vietnamese: "chê bai, gièm pha", interval: 1, nextReview: Date.now() },
+            { japanese: "秘める", vietnamese: "giấu kín, che giấu", interval: 1, nextReview: Date.now() },
+            { japanese: "立て替える", vietnamese: "trả hộ, ứng trước", interval: 1, nextReview: Date.now() },
+            { japanese: "障る", vietnamese: "gây hại, ảnh hưởng xấu", interval: 1, nextReview: Date.now() },
+            { japanese: "かばう", vietnamese: "bảo vệ, che chở", interval: 1, nextReview: Date.now() },
+            { japanese: "練る", vietnamese: "nhào, trộn, trau chuốt", interval: 1, nextReview: Date.now() },
+            { japanese: "担う", vietnamese: "gánh vác, đảm nhận", interval: 1, nextReview: Date.now() },
+            { japanese: "ためらう", vietnamese: "do dự, lưỡng lự", interval: 1, nextReview: Date.now() },
+            { japanese: "急かす", vietnamese: "hối thúc, giục giã", interval: 1, nextReview: Date.now() },
+            { japanese: "当てはめる", vietnamese: "áp dụng, gán cho", interval: 1, nextReview: Date.now() },
+            { japanese: "辿る", vietnamese: "lần theo, theo dấu", interval: 1, nextReview: Date.now() },
+            { japanese: "打ち込む", vietnamese: "tập trung vào, dồn hết sức vào", interval: 1, nextReview: Date.now() },
+            { japanese: "取り込む", vietnamese: "thu vào, lừa gạt, bận rộn", interval: 1, nextReview: Date.now() },
+            { japanese: "剥がす", vietnamese: "bóc ra, lột ra", interval: 1, nextReview: Date.now() },
+            { japanese: "損なう", vietnamese: "làm hỏng, gây tổn hại", interval: 1, nextReview: Date.now() },
+            { japanese: "しがみつく", vietnamese: "bám chặt lấy, níu kéo", interval: 1, nextReview: Date.now() },
+            { japanese: "食い止める", vietnamese: "ngăn chặn, chặn đứng", interval: 1, nextReview: Date.now() },
+            { japanese: "揺らぐ", vietnamese: "lung lay, dao động", interval: 1, nextReview: Date.now() },
+            { japanese: "思い返す", vietnamese: "nhớ lại, hồi tưởng", interval: 1, nextReview: Date.now() },
+            { japanese: "抱え込む", vietnamese: "ôm vào lòng, giữ khư khư", interval: 1, nextReview: Date.now() },
+            { japanese: "携わる", vietnamese: "tham gia vào, liên quan đến", interval: 1, nextReview: Date.now() },
+            { japanese: "紛れる", vietnamese: "bị lẫn vào, bị phân tâm", interval: 1, nextReview: Date.now() },
+            { japanese: "仕上がる", vietnamese: "hoàn thành, xong xuôi", interval: 1, nextReview: Date.now() }
+        ];
+
+        let currentCardIndex = 0;
+        const flashcardContainer = document.getElementById('flashcard-container');
+        const showAnswerButton = document.getElementById('show-answer');
+        const correctButton = document.getElementById('correct');
+        const incorrectButton = document.getElementById('incorrect');
+        const progressDiv = document.getElementById('progress');
+
+        function displayCard(index) {
+            const cardData = vocabulary[index];
+            flashcardContainer.innerHTML = `
+                <div class="flashcard">
+                    <div class="front">${cardData.japanese}</div>
+                    <div class="back">${cardData.vietnamese}</div>
+                </div>
+            `;
+
+            const flashcardElement = flashcardContainer.querySelector('.flashcard');
+            let isFlipped = false;
+
+            flashcardElement.addEventListener('click', () => {
+                isFlipped = !isFlipped;
+                flashcardElement.classList.toggle('flipped', isFlipped);
+            });
+        }
+
+        function updateProgress() {
+            const remaining = vocabulary.filter(card => card.nextReview <= Date.now()).length;
+            progressDiv.textContent = `Thẻ cần ôn: ${remaining} / Tổng số thẻ: ${vocabulary.length}`;
+        }
+
+        function getNextCardIndex() {
+            const reviewableCards = vocabulary.filter(card => card.nextReview <= Date.now());
+            if (reviewableCards.length === 0) {
+                // Nếu không có thẻ nào cần ôn, hiển thị thông báo hoặc lặp lại các thẻ đã học gần đây
+                alert("Bạn đã học hết các thẻ hôm nay!");
+                // Có thể thiết lập để lặp lại các thẻ đã học gần đây nếu muốn
+                return Math.floor(Math.random() * vocabulary.length);
+            }
+            const randomIndex = Math.floor(Math.random() * reviewableCards.length);
+            return vocabulary.indexOf(reviewableCards[randomIndex]);
+        }
+
+        function markCorrect() {
+            updateCardInterval(currentCardIndex, true);
+            loadNextCard();
+        }
+
+        function markIncorrect() {
+            updateCardInterval(currentCardIndex, false);
+            loadNextCard();
+        }
+
+        function updateCardInterval(index, isCorrect) {
+            const card = vocabulary[index];
+            if (isCorrect) {
+                card.interval *= 2; // Tăng khoảng thời gian xem lại
+            } else {
+                card.interval = 1; // Đặt lại khoảng thời gian nếu sai
+            }
+            const now = Date.now();
+            card.nextReview = now + card.interval * 24 * 60 * 60 * 1000; // Tính thời gian xem lại tiếp theo
+        }
+
+        function loadNextCard() {
+            currentCardIndex = getNextCardIndex();
+            displayCard(currentCardIndex);
+            updateProgress();
+        }
+
+        // Initial load
+        loadNextCard();
+
+        showAnswerButton.addEventListener('click', () => {
+            const flashcardElement = flashcardContainer.querySelector('.flashcard');
+            flashcardElement.classList.add('flipped');
+        });
+
+        correctButton.addEventListener('click', markCorrect);
+        incorrectButton.addEventListener('click', markIncorrect);
+    </script>
+</body>
+</html>
