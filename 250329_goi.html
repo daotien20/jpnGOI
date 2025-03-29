@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>250329_goi</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 50px;
+        }
+
+        .flashcard {
+            width: 300px;
+            min-height: 150px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 2px 2px 5px #888888;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2em;
+        }
+
+        .flashcard.flipped {
+            background-color: #e0f7fa;
+        }
+
+        .front, .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backface-visibility: hidden;
+            transition: transform 0.5s;
+        }
+
+        .back {
+            transform: rotateY(180deg);
+        }
+
+        .flipped .front {
+            transform: rotateY(180deg);
+        }
+
+        .flipped .back {
+            transform: rotateY(0deg);
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        #controls {
+            margin-bottom: 20px;
+        }
+
+        #progress {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Học từ vựng tiếng Nhật</h1>
+
+    <div id="progress"></div>
+
+    <div id="flashcard-container">
+        </div>
+
+    <div id="controls">
+        <button id="show-answer">Xem đáp án</button>
+        <button id="correct">Đúng</button>
+        <button id="incorrect">Sai</button>
+    </div>
+
+    <script>
+        const vocabulary = [
+            { japanese: "ひそか に", vietnamese: "Thầm lặng, bí mật", interval: 1, nextReview: Date.now() },
+            { japanese: "こっそり", vietnamese: "Lén lút, vụng trộm", interval: 1, nextReview: Date.now() },
+            { japanese: "おのずと", vietnamese: "Tự nhiên, đương nhiên", interval: 1, nextReview: Date.now() },
+            { japanese: "急遽", vietnamese: "Vội vàng, khẩn cấp", interval: 1, nextReview: Date.now() },
+            { japanese: "しきりに", vietnamese: "Liên tục, không ngừng", interval: 1, nextReview: Date.now() },
+            { japanese: "総じて", vietnamese: "Nói chung, nhìn chung", interval: 1, nextReview: Date.now() },
+            { japanese: "無性に", vietnamese: "Vô cùng, cực kỳ", interval: 1, nextReview: Date.now() },
+            { japanese: "じめじめ", vietnamese: "Ẩm ướt, nhớp nháp", interval: 1, nextReview: Date.now() },
+            { japanese: "あらかじめ", vietnamese: "Trước, sẵn", interval: 1, nextReview: Date.now() },
+            { japanese: "事前 に", vietnamese: "Trước, trước khi", interval: 1, nextReview: Date.now() },
+            { japanese: "おおむね", vietnamese: "Đại khái, khoảng chừng", interval: 1, nextReview: Date.now() },
+            { japanese: "とりわけ", vietnamese: "Đặc biệt, nhất là", interval: 1, nextReview: Date.now() },
+            { japanese: "くまなく", vietnamese: "Khắp nơi, mọi ngóc ngách", interval: 1, nextReview: Date.now() },
+            { japanese: "ふい に", vietnamese: "Bất ngờ, đột ngột", interval: 1, nextReview: Date.now() },
+            { japanese: "大げさ に", vietnamese: "Phóng đại, làm quá", interval: 1, nextReview: Date.now() },
+            { japanese: "もはや", vietnamese: "Đã, rồi", interval: 1, nextReview: Date.now() },
+            { japanese: "頻繁 に", vietnamese: "Thường xuyên, hay", interval: 1, nextReview: Date.now() },
+            { japanese: "へたへた に", vietnamese: "Mệt mỏi rã rời, kiệt sức", interval: 1, nextReview: Date.now() },
+            { japanese: "かろうじて", vietnamese: "Vừa đủ, suýt soát", interval: 1, nextReview: Date.now() },
+            { japanese: "何とか", vietnamese: "Bằng cách nào đó, xoay sở", interval: 1, nextReview: Date.now() },
+            { japanese: "すんなり", vietnamese: "Trơn tru, suôn sẻ", interval: 1, nextReview: Date.now() },
+            { japanese: "かねがね", vietnamese: "Từ trước, đã lâu", interval: 1, nextReview: Date.now() },
+            { japanese: "以前 から", vietnamese: "Từ trước, trước đây", interval: 1, nextReview: Date.now() },
+            { japanese: "故意 に", vietnamese: "Cố ý, có chủ tâm", interval: 1, nextReview: Date.now() },
+            { japanese: "わざと", vietnamese: "Cố ý, cố tình", interval: 1, nextReview: Date.now() },
+            { japanese: "もっぱら", vietnamese: "Chủ yếu, hầu hết", interval: 1, nextReview: Date.now() },
+            { japanese: "うすうす", vietnamese: "Lờ mờ, mơ hồ", interval: 1, nextReview: Date.now() },
+            { japanese: "なんとなく", vietnamese: "Không hiểu sao, một cách mơ hồ", interval: 1, nextReview: Date.now() },
+            { japanese: "いとも", vietnamese: "Dễ dàng, đơn giản", interval: 1, nextReview: Date.now() },
+            { japanese: "若干", vietnamese: "Một chút, hơi", interval: 1, nextReview: Date.now() },
+            { japanese: "わずか に", vietnamese: "Một chút, rất ít", interval: 1, nextReview: Date.now() },
+            { japanese: "真っ先 に", vietnamese: "Đầu tiên, trước hết", interval: 1, nextReview: Date.now() },
+            { japanese: "がらり と", vietnamese: "Hoàn toàn thay đổi, đột ngột", interval: 1, nextReview: Date.now() },
+            { japanese: "漠然", vietnamese: "Mơ hồ, không rõ ràng", interval: 1, nextReview: Date.now() },
+            { japanese: "せかせか と", vietnamese: "Vội vã, hấp tấp", interval: 1, nextReview: Date.now() },
+            { japanese: "めいめい に", vietnamese: "Mỗi người, riêng rẽ", interval: 1, nextReview: Date.now() },
+            { japanese: "ありあり と", vietnamese: "Rõ ràng, rành rành", interval: 1, nextReview: Date.now() },
+            { japanese: "ひしひし と", vietnamese: "Cảm nhận rõ ràng, thấm thía", interval: 1, nextReview: Date.now() },
+            { japanese: "ずっしり と", vietnamese: "Nặng trịch, chắc nịch", interval: 1, nextReview: Date.now() },
+            { japanese: "つぶさに", vietnamese: "Chi tiết, tỉ mỉ", interval: 1, nextReview: Date.now() },
+            { japanese: "みっちり", vietnamese: "Chặt chẽ, kỹ lưỡng", interval: 1, nextReview: Date.now() },
+            { japanese: "うずうず", vietnamese: "Ngứa ngáy, bồn chồn", interval: 1, nextReview: Date.now() },
+            { japanese: "じっと", vietnamese: "Im lặng, đứng im", interval: 1, nextReview: Date.now() },
+            { japanese: "実に", vietnamese: "Thực sự, quả thực", interval: 1, nextReview: Date.now() },
+            { japanese: "ろくに", vietnamese: "Không... đàng hoàng, không... tử tế", interval: 1, nextReview: Date.now() },
+            { japanese: "大して", vietnamese: "Không... lắm, không... nhiều", interval: 1, nextReview: Date.now() }
+        ];
+
+        let currentCardIndex = 0;
+        const flashcardContainer = document.getElementById('flashcard-container');
+        const showAnswerButton = document.getElementById('show-answer');
+        const correctButton = document.getElementById('correct');
+        const incorrectButton = document.getElementById('incorrect');
+        const progressDiv = document.getElementById('progress');
+
+        function displayCard(index) {
+            const cardData = vocabulary[index];
+            flashcardContainer.innerHTML = `
+                <div class="flashcard">
+                    <div class="front">${cardData.japanese}</div>
+                    <div class="back">${cardData.vietnamese}</div>
+                </div>
+            `;
+
+            const flashcardElement = flashcardContainer.querySelector('.flashcard');
+            let isFlipped = false;
+
+            flashcardElement.addEventListener('click', () => {
+                isFlipped = !isFlipped;
+                flashcardElement.classList.toggle('flipped', isFlipped);
+            });
+        }
+
+        function updateProgress() {
+            const remaining = vocabulary.filter(card => card.nextReview <= Date.now()).length;
+            progressDiv.textContent = `Thẻ cần ôn: ${remaining} / Tổng số thẻ: ${vocabulary.length}`;
+        }
+
+        function getNextCardIndex() {
+            const reviewableCards = vocabulary.filter(card => card.nextReview <= Date.now());
+            if (reviewableCards.length === 0) {
+                // Nếu không có thẻ nào cần ôn, hiển thị thông báo hoặc lặp lại các thẻ đã học gần đây
+                alert("Bạn đã học hết các thẻ hôm nay!");
+                // Có thể thiết lập để lặp lại các thẻ đã học gần đây nếu muốn
+                return Math.floor(Math.random() * vocabulary.length);
+            }
+            const randomIndex = Math.floor(Math.random() * reviewableCards.length);
+            return vocabulary.indexOf(reviewableCards[randomIndex]);
+        }
+
+        function markCorrect() {
+            updateCardInterval(currentCardIndex, true);
+            loadNextCard();
+        }
+
+        function markIncorrect() {
+            updateCardInterval(currentCardIndex, false);
+            loadNextCard();
+        }
+
+        function updateCardInterval(index, isCorrect) {
+            const card = vocabulary[index];
+            if (isCorrect) {
+                card.interval *= 2; // Tăng khoảng thời gian xem lại
+            } else {
+                card.interval = 1; // Đặt lại khoảng thời gian nếu sai
+            }
+            const now = Date.now();
+            card.nextReview = now + card.interval * 24 * 60 * 60 * 1000; // Tính thời gian xem lại tiếp theo
+        }
+
+        function loadNextCard() {
+            currentCardIndex = getNextCardIndex();
+            displayCard(currentCardIndex);
+            updateProgress();
+        }
+
+        // Initial load
+        loadNextCard();
+
+        showAnswerButton.addEventListener('click', () => {
+            const flashcardElement = flashcardContainer.querySelector('.flashcard');
+            flashcardElement.classList.add('flipped');
+        });
+
+        correctButton.addEventListener('click', markCorrect);
+        incorrectButton.addEventListener('click', markIncorrect);
+    </script>
+</body>
+</html>
