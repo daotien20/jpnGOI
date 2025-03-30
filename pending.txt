@@ -1,0 +1,7 @@
+need updates
+1/ Click button "Thẻ tiếp" để chuyển sang thẻ khác
+2/ Vị trí của mục "Thẻ cần ôn: 43 / Tổng số thẻ: 43"
+3/ Tạo button "Thuộc", "Chần chừ", "Chả nhớ"
+4/ Đếm được số lượng card theo từng nhóm button "Thuộc", "Chần chừ", "Chả nhớ"
+5/ 
+
