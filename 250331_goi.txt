@@ -1,23 +1,23 @@
-41. 取り戻す (Torimodosu): Lấy lại, khôi phục
-42. ありふれる (Arifureru): Phổ biến, thông thường
-43. うろたえる (Urotaeru): Bối rối, hoảng loạn
-44. 慌てる (Awateru): Vội vàng, hấp tấp
-45. 帯びる (Obiru): Mang, có dấu hiệu
-46. 思い詰める (Omoitsumeru): Suy nghĩ kỹ, trăn trở
-47. 尽くす (Tsukusu): Cống hiến, tận tâm
-48. 切り出す (Kiridasu): Bắt đầu nói, đề cập
-49. 戸惑う (Tomadou): Bối rối, lúng túng
-50. 退く (Shirizoku): Rút lui, lùi bước
-51. 見かける (Mikakeru): Bắt gặp, nhìn thấy
-52. 染みる (Shimiru): Thấm, ngấm
-53. おびえる (Obieru): Sợ hãi, khiếp sợ
-54. 怖がる (Kowagaru): Sợ hãi
-55. 察する (Sassuru): Đoán, suy đoán
-56. 食い違う (Kuichigau): Khác biệt, mâu thuẫn
-57. よみがえる (Yomigaeru): Sống lại, hồi sinh
-58. たたえる (Tataeru): Khen ngợi, ca ngợi
-59. 滅びる (Horobiru): Diệt vong, suy tàn
-60. はじく (Hajiku): Đẩy ra, bật ra
+取り戻す (Torimodosu): Lấy lại, khôi phục
+ありふれる (Arifureru): Phổ biến, thông thường
+うろたえる (Urotaeru): Bối rối, hoảng loạn
+慌てる (Awateru): Vội vàng, hấp tấp
+帯びる (Obiru): Mang, có dấu hiệu
+思い詰める (Omoitsumeru): Suy nghĩ kỹ, trăn trở
+尽くす (Tsukusu): Cống hiến, tận tâm
+切り出す (Kiridasu): Bắt đầu nói, đề cập
+戸惑う (Tomadou): Bối rối, lúng túng
+退く (Shirizoku): Rút lui, lùi bước
+見かける (Mikakeru): Bắt gặp, nhìn thấy
+染みる (Shimiru): Thấm, ngấm
+おびえる (Obieru): Sợ hãi, khiếp sợ
+怖がる (Kowagaru): Sợ hãi
+察する (Sassuru): Đoán, suy đoán
+食い違う (Kuichigau): Khác biệt, mâu thuẫn
+よみがえる (Yomigaeru): Sống lại, hồi sinh
+たたえる (Tataeru): Khen ngợi, ca ngợi
+滅びる (Horobiru): Diệt vong, suy tàn
+はじく (Hajiku): Đẩy ra, bật ra
 取り消す (Torikesu): Hủy bỏ, rút lại
 競い合う (Kisoiau): Cạnh tranh, thi đấu
 遂げる (Togeru): Đạt được, hoàn thành
